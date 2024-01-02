@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "896846452358",
+    "project_id": "stp-flutter-7cc1b",
+    "storage_bucket": "stp-flutter-7cc1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896846452358:android:613b61ad3dca2551856307",
+        "android_client_info": {
+          "package_name": "ru.vsu.stp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCB-6QZB1ckCE1E5llpZVF8saidKxGQhVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
