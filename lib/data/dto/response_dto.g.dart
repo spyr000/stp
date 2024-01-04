@@ -29,6 +29,7 @@ Map<String, dynamic> _$QueryToJson(Query instance) => <String, dynamic>{
     };
 
 Page _$PageFromJson(Map<String, dynamic> json) => Page(
+      pageid: json['pageid'] as int?,
       title: json['title'] as String?,
       extract: json['extract'] as String?,
       terms: json['terms'] == null
@@ -41,6 +42,7 @@ Page _$PageFromJson(Map<String, dynamic> json) => Page(
     );
 
 Map<String, dynamic> _$PageToJson(Page instance) => <String, dynamic>{
+      'pageid': instance.pageid,
       'title': instance.title,
       'extract': instance.extract,
       'terms': instance.terms,

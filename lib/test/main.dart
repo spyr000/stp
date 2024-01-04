@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import '../data/service/api_service.dart';
+import '../service/api_service.dart';
 
 void main() {
   runApp(MyApp());
@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ElevatedButton(
           onPressed: () async {
             try {
-              final response = await apiService.fetchData();
+              final response = await apiService.fetchFeedData();
               // Process the response here
               print(response);
             } catch (e) {

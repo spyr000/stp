@@ -99,7 +99,7 @@ class Query {
 
 @JsonSerializable()
 class Page {
-  // final int? pageid;
+  final int? pageid;
   // final int? ns;
   final String? title;
   final String? extract;
@@ -111,7 +111,7 @@ class Page {
 
   Page(
       {
-        // this.pageid,
+        this.pageid,
         // this.ns,
         this.title,
         this.extract,
@@ -129,7 +129,7 @@ class Page {
   @override
   String toString() {
     return 'Page{'
-        // 'pageid: $pageid, '
+        'pageid: $pageid, '
         // 'ns: $ns, '
         'title: $title, '
         // 'extract: $extract, '

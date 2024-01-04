@@ -21,7 +21,7 @@ class _ApiService implements ApiService {
   String? baseUrl;
 
   @override
-  Future<ResponseModel> fetchData() async {
+  Future<ResponseModel> fetchFeedData() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -34,7 +34,34 @@ class _ApiService implements ApiService {
     )
             .compose(
               _dio.options,
-              '/?format=json&formatversion=2&action=query&uselang=user&generator=random&grnnamespace=0&grnlimit=10&piprop=original&pilimit=10&exintro=1&inprop=url&prop=extracts|pageterms|pageimages|info',
+              '/?format=json&formatversion=2&action=query&uselang=user&generator=random&grnnamespace=0&grnlimit=10&piprop=original&pilimit=10&inprop=url&prop=pageterms|pageimages|info',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = ResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ResponseModel> fetchSinglePageData(int pageids) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<ResponseModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/?format=json&formatversion=2&action=query&pageids=${pageids}&uselang=user&piprop=original&pilimit=10&inprop=url&prop=extracts|pageterms|pageimages|info',
               queryParameters: queryParameters,
               data: _data,
             )

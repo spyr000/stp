@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -50,21 +51,27 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                // Replace the condition with your authentication logic
+              onPressed: () async {
                 if (_loginController.text == 'user' &&
                     _passwordController.text == 'password') {
-                  // Navigate to another screen on successful authentication
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
+                  SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+                  prefs.setBool('authenticated', true);
+
+                  Navigator.pushReplacementNamed(context, '/home');
                 } else {
-                  // Show an error message or handle unsuccessful authentication
                   print('Authentication failed');
                 }
               },
               child: Text('Submit'),
+            ),
+            SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                // Navigate to the registration page
+                Navigator.pushReplacementNamed(context, '/registration');
+              },
+              child: Text('Don\'t have an account? Register here'),
             ),
           ],
         ),

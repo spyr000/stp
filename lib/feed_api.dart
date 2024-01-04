@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:stp/feed/page/page_item.dart';
-import 'package:dio/dio.dart';
-import '../data/service/api_service.dart';
-import '../data/mapper/page_mapper.dart';
+import 'package:kiwi/kiwi.dart';
+import 'package:stp/feed/page/shimmer.dart';
+import 'package:stp/ioc/di_container.dart';
+import '../service/api_service.dart';
+import '../data/mapper/page_item_mapper.dart';
+import 'data/mapper/page_card_mapper.dart';
 
 void main() {
+  setupContainer();
   runApp(MyApp());
 }
 
@@ -12,17 +16,66 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(),
+      onGenerateRoute: (settings) {
+        if (settings.name!.startsWith('/page')) {
+          return MaterialPageRoute(builder: (context) {
+            final Map<String, dynamic>? args =
+                settings.arguments as Map<String, dynamic>?;
+
+            int pageId = args?['pageId'] ?? 0;
+
+            return FutureBuilder(
+              future: fetchPageData(pageId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                      body: Center(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ShimmerImage(),
+                              CircularProgressIndicator()
+                            ],
+                          )
+                      ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center( //TODO: ERROR WIDGET
+                      child: Text('Error: ${snapshot.error}')
+                  );
+                } else {
+                  var fetchedItems =
+                      snapshot.data as List; // Adjust the type accordingly
+                  return fetchedItems.isNotEmpty
+                      ? fetchedItems[0]
+                      : Container();
+                }
+              },
+            );
+          });
+        }
+        return MaterialPageRoute(builder: (context) => HomePage());
+      },
+      home: HomePage(),
     );
+  }
+
+  Future<List> fetchPageData(int pageId) async {
+    var apiService = KiwiContainer().resolve<ApiService>();
+    final response = await apiService.fetchSinglePageData(pageId);
+    debugPrint('fetched response: $response');
+    return PageCardMapper.fromResponseModelDto(response);
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
   late ApiService apiService;
   final List<PageItem> items = [];
   final ScrollController _scrollController = ScrollController();
@@ -30,8 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    final dio = Dio();
-    apiService = ApiService(dio);
+    apiService = KiwiContainer().resolve<ApiService>();
     _scrollController.addListener(_scrollListener);
     _loadMoreItems();
   }
@@ -45,16 +97,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void _scrollListener() async {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      // User has reached the end of the list
       _loadMoreItems();
     }
   }
 
   Future<void> _loadMoreItems() async {
     try {
-      final response = await apiService.fetchData();
-      // print(response);
-      final fetchedItems = PageMapper.fromResponseModelDto(response);
+      final response = await apiService.fetchFeedData();
+      debugPrint('fetched response: $response');
+      final fetchedItems = PageItemMapper.fromResponseModelDto(response);
       setState(() {
         items.addAll(fetchedItems);
       });
@@ -67,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scroll and Fill'),
+        title: Text('Home'),
       ),
       body: ListView.builder(
         controller: _scrollController,

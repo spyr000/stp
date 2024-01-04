@@ -14,7 +14,8 @@ class PageItemButtonsRow extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SizedBox(
-        width: double.infinity,
+        width: 400,
+        height: 400,
         child: Row(
           // crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
