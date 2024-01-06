@@ -1,81 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:stp/auth/auth_service.dart';
 import 'package:stp/feed/page/page_item.dart';
 import 'package:kiwi/kiwi.dart';
-import 'package:stp/feed/page/shimmer.dart';
-import 'package:stp/ioc/di_container.dart';
 import '../service/api_service.dart';
 import '../data/mapper/page_item_mapper.dart';
-import 'data/mapper/page_card_mapper.dart';
-
-void main() {
-  setupContainer();
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      onGenerateRoute: (settings) {
-        if (settings.name!.startsWith('/page')) {
-          return MaterialPageRoute(builder: (context) {
-            final Map<String, dynamic>? args =
-                settings.arguments as Map<String, dynamic>?;
-
-            int pageId = args?['pageId'] ?? 0;
-
-            return FutureBuilder(
-              future: fetchPageData(pageId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Scaffold(
-                      body: Center(
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              ShimmerImage(),
-                              CircularProgressIndicator()
-                            ],
-                          )
-                      ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center( //TODO: ERROR WIDGET
-                      child: Text('Error: ${snapshot.error}')
-                  );
-                } else {
-                  var fetchedItems =
-                      snapshot.data as List; // Adjust the type accordingly
-                  return fetchedItems.isNotEmpty
-                      ? fetchedItems[0]
-                      : Container();
-                }
-              },
-            );
-          });
-        }
-        return MaterialPageRoute(builder: (context) => HomePage());
-      },
-      home: HomePage(),
-    );
-  }
-
-  Future<List> fetchPageData(int pageId) async {
-    var apiService = KiwiContainer().resolve<ApiService>();
-    final response = await apiService.fetchSinglePageData(pageId);
-    debugPrint('fetched response: $response');
-    return PageCardMapper.fromResponseModelDto(response);
-  }
-}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  late AuthService authService;
   late ApiService apiService;
   final List<PageItem> items = [];
   final ScrollController _scrollController = ScrollController();
@@ -84,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     apiService = KiwiContainer().resolve<ApiService>();
+    authService = KiwiContainer().resolve<AuthService>();
     _scrollController.addListener(_scrollListener);
     _loadMoreItems();
   }
@@ -110,7 +49,7 @@ class _HomePageState extends State<HomePage> {
         items.addAll(fetchedItems);
       });
     } catch (e) {
-      print('Error: $e');
+      rethrow;
     }
   }
 
@@ -118,7 +57,25 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: const Text('Home'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'logout') {
+                authService.logout().then((value) =>
+                    Navigator.pushReplacementNamed(context, '/login'));
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Text('Logout'),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         controller: _scrollController,

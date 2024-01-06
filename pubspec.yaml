@@ -47,6 +47,9 @@ dependencies:
   cached_network_image: ^3.3.1
   shimmer: ^3.0.0
   shared_preferences: ^2.2.2
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.16.0
+  cloud_firestore: ^4.14.0
 
 #  cloud_firestore: ^4.13.5
 #  flutter_secure_storage: ^5.2.4

@@ -22,15 +22,13 @@ class PageItemButtonsRow extends StatelessWidget {
           children: [
             PageItemButton(
               key: ObjectKey("$title\_link"),
-              onPressed: () => {print(pageUrl)},
-              isChangingColorOnPress: false,
-              icon: Icons.link,
+              onTurningOn: () => {print(pageUrl)},
+              icon: Icons.link, onTurningOff: () {  },
             ),
             PageItemButton(
               key: ObjectKey("$title\_add"),
-              onPressed: () => {},
-              isChangingColorOnPress: true,
-              icon: Icons.bookmark,
+              onTurningOn: () => {},
+              icon: Icons.bookmark, onTurningOff: () {  },
             )
           ],
         ),

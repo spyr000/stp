@@ -22,6 +22,8 @@ abstract class PageCardMapper {
       description: description,
       exIntro: page.extract ?? "No info",
       imageUrl: imageUrl,
+      imageWidth: page.original?.width ?? 200,
+      imageHeight: page.original?.height ?? 200,
       pageUrl: page.canonicalurl ?? "https://en.wikipedia.org",
     );
   }

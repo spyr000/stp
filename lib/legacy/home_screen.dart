@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'auth/auth_service.dart';
+import '../auth/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              AuthService.logout(context);
+              // AuthService.logout(context);
             },
           ),
         ],

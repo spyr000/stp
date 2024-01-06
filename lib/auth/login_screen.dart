@@ -1,38 +1,23 @@
 import 'package:flutter/material.dart';
-import '../home_screen.dart';
+import 'package:kiwi/kiwi.dart';
+import '../legacy/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(MyApp());
-}
+import 'auth_service.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Authentication App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginScreen(),
-    );
-  }
-}
-
-class LoginScreen extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _loginController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    final AuthService authService = KiwiContainer().resolve<AuthService>();
+    const spacer = SizedBox(height: 20);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Authentication Screen'),
+        title: const Text('Login'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -40,38 +25,38 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _loginController,
-              decoration: InputDecoration(labelText: 'Login'),
+              controller: emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 20),
+            spacer,
             TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              controller: passwordController,
+              decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            spacer,
             ElevatedButton(
               onPressed: () async {
-                if (_loginController.text == 'user' &&
-                    _passwordController.text == 'password') {
-                  SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
-                  prefs.setBool('authenticated', true);
-
-                  Navigator.pushReplacementNamed(context, '/home');
-                } else {
-                  print('Authentication failed');
-                }
+                await authService
+                    .login(emailController.text, passwordController.text)
+                    .then(
+                        (value) =>
+                            Navigator.pushReplacementNamed(context, "/home"),
+                        onError: (error, stackTrace) {
+                  final snackBar = SnackBar(
+                    content: Text(error.toString()),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                });
               },
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                // Navigate to the registration page
                 Navigator.pushReplacementNamed(context, '/registration');
               },
-              child: Text('Don\'t have an account? Register here'),
+              child: const Text('Don\'t have an account? Register here'),
             ),
           ],
         ),
@@ -79,4 +64,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import '../service/api_service.dart';
+import '../../service/api_service.dart';
 
 void main() {
   runApp(MyApp());

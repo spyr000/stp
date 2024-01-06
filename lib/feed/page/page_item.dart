@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stp/feed/page/page_image.dart';
 import 'package:stp/feed/page/shimmer.dart';
 import 'package:stp/service/network_redirection_service.dart';
 import 'package:stp/feed/page/button/page_item_button.dart';
 
 class PageItem extends StatelessWidget {
-  final Key? key;
   final int pageId;
   final String imageUrl;
   final int imageWidth;
@@ -18,7 +18,6 @@ class PageItem extends StatelessWidget {
 
   // Private constructor
   const PageItem._({
-    this.key,
     required this.pageId,
     required this.imageUrl,
     required this.imageWidth,
@@ -29,7 +28,6 @@ class PageItem extends StatelessWidget {
   });
 
   factory PageItem({
-    Key? key,
     required int pageId,
     required String imageUrl,
     required int imageWidth,
@@ -39,7 +37,6 @@ class PageItem extends StatelessWidget {
     required String pageUrl,
   }) {
     return PageItem._(
-      key: key,
       pageId: pageId,
       imageUrl: imageUrl,
       imageWidth: imageWidth,
@@ -52,7 +49,6 @@ class PageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSvg = imageUrl.endsWith('.svg');
     return Card(
       margin: const EdgeInsets.all(16.0),
       color: Colors.redAccent[50],
@@ -66,52 +62,12 @@ class PageItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
             ),
             margin: const EdgeInsets.all(16.0),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/page/$pageId',
-                      arguments: {'pageId': pageId},
-                    );
-                  },
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-
-                      var containerWidth = constraints.maxWidth;
-                      var containerHeight = containerWidth * imageHeight / imageWidth;
-
-                      return SizedBox(
-                        height: containerHeight,
-                        width: containerWidth,
-                        child: isSvg
-                            ? SvgPicture.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                height: containerHeight,
-                                width: containerWidth,
-                                placeholderBuilder: (context) => ShimmerImage(
-                                  height: containerHeight,
-                                    width: containerWidth
-                                ),
-                              )
-                            : CachedNetworkImage(
-                                imageUrl: imageUrl,
-                                fit: BoxFit.cover,
-                                height: containerHeight,
-                                width: containerWidth,
-                                placeholder: (context, url) => ShimmerImage(
-                                  height: containerHeight,
-                                  width: containerWidth,
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
-                      );
-                    },
-                  ),
-                )),
+            child: PageImage(
+              pageId: pageId,
+              imageUrl: imageUrl,
+              imageWidth: imageWidth,
+              imageHeight: imageHeight,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
@@ -135,18 +91,25 @@ class PageItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              PageItemButton(
-                key: ObjectKey("$pageId\_link"),
-                onPressed: () => UrlLauncher.launchPageURL(pageUrl),
-                isChangingColorOnPress: false,
-                icon: Icons.link,
+              //TODO: PUT IN SEPARATE CLASS
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxHeight: 48.0,
+                ),
+                child: IconButton(
+                  onPressed: () => UrlLauncher.launchPageURL(pageUrl),
+                  icon: Icon(
+                    Icons.link,
+                    color: Colors.grey[700],
+                  ),
+                ),
               ),
-              PageItemButton(
-                key: ObjectKey("$pageId\_add"),
-                onPressed: () => {},
-                isChangingColorOnPress: true,
-                icon: Icons.bookmark,
-              )
+              // PageItemButton(
+              //   key: ObjectKey("$pageId\_add"),
+              //   onTurningOn: () => {},
+              //   onTurningOff: () {  },
+              //   icon: Icons.bookmark,
+              // )
             ],
           ),
         ],
