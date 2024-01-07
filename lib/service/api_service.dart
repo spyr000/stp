@@ -32,5 +32,10 @@ abstract class ApiService {
       "inprop=url&"
       // "exintro=1&"
       "prop=extracts|pageterms|pageimages|info")
-  Future<ResponseModel> fetchSinglePageData(@Path("pageids") int pageids);
+  Future<ResponseModel> fetchPagesData(@Path("pageids") Object pageids);
+
+  Future<ResponseModel> fetchSpecifiedPagesData(List<int> pageids)  {
+    var pageidsParam = pageids.map((id) => id.toString()).join('|');
+    return fetchPagesData(pageidsParam);
+  }
 }

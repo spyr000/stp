@@ -48,7 +48,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<ResponseModel> fetchSinglePageData(int pageids) async {
+  Future<ResponseModel> fetchPagesData(Object pageids) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -102,5 +102,11 @@ class _ApiService implements ApiService {
     }
 
     return Uri.parse(dioBaseUrl).resolveUri(url).toString();
+  }
+
+  @override
+  Future<ResponseModel> fetchSpecifiedPagesData(List<int> pageids) {
+    var pageidsParam = pageids.map((id) => id.toString()).join('|');
+    return fetchPagesData(pageidsParam);
   }
 }

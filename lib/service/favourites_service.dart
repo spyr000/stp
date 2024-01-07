@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart';
 import 'package:stp/exception/add_to_favourites_exception.dart';
 
-import '../auth/auth_service.dart';
+import 'auth_service.dart';
 
 class FavouritesService {
+  static const int FAVOURITE_BATCH_SIZE = 10;
   static final _firestore = FirebaseFirestore.instance;
   static final _authService = KiwiContainer().resolve<AuthService>();
+  static bool isFavouritesRemain = true;
 
-  static Future<void> save(int pageId) async {
+  static Future<void> saveToFavourites(int pageId) async {
     var uid = await _authService.getAuthUserUID();
     if (uid == null) {
       throw AddToFavouritesException(
@@ -38,26 +41,42 @@ class FavouritesService {
     });
   }
 
-  static Future<List<int>> getFavouritePageIds() async {
+  static Future<FavouritesBatch> getFavouritesBatch(
+      Timestamp? lastFavouriteTimestamp) async {
     var uid = await _authService.getAuthUserUID();
     if (uid == null) {
       throw 'Unauthorized';
     }
 
-    var querySnapshot = await _firestore
+    Query query = _firestore
         .collection('users')
         .doc(uid)
         .collection('favourites')
-        .get();
+        .orderBy('timestamp');
+    if (lastFavouriteTimestamp != null) {
+      query = query.where('timestamp', isGreaterThan: lastFavouriteTimestamp);
+    }
+    var querySnapshot = await query.limit(FAVOURITE_BATCH_SIZE).get();
 
     var pageIds =
         querySnapshot.docs.map((doc) => doc['pageId'] as int).toList();
 
-    print(pageIds.toString());
-    return pageIds;
+    try {
+      var lastItemTimestamp =
+          querySnapshot.docs.last.get('timestamp') as Timestamp;
+      return FavouritesBatch(
+        pageIds: pageIds,
+        lastItemTimestamp: lastItemTimestamp,
+      );
+    } catch (e) {
+      return const FavouritesBatch(
+        pageIds: [],
+        lastItemTimestamp: null,
+      );
+    }
   }
 
-  static Future<void> delete(int pageId) async {
+  static Future<void> deleteById(int pageId) async {
     var uid = await _authService.getAuthUserUID();
     if (uid == null) {
       throw 'Unauthorized';
@@ -78,5 +97,39 @@ class FavouritesService {
           .doc(querySnapshot.docs.first.id)
           .delete();
     }
+  }
+
+  static Future<bool> isInFavourites(int pageId) async {
+    var uid = await _authService.getAuthUserUID();
+    if (uid == null) {
+      throw 'Unauthorized';
+    }
+
+    var querySnapshot = await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('favourites')
+        .where('pageId', isEqualTo: pageId)
+        .get();
+
+    return querySnapshot.docs.isNotEmpty && querySnapshot.docs.first.exists;
+  }
+}
+
+class FavouritesBatch {
+  final List<int> pageIds;
+  final Timestamp? lastItemTimestamp;
+
+  const FavouritesBatch({
+    required this.pageIds,
+    required this.lastItemTimestamp,
+  });
+
+  @override
+  String toString() {
+    return 'FavouritesBatchResponse{'
+        'pageIds: $pageIds,'
+        'favouritesCount: $lastItemTimestamp'
+        '}';
   }
 }
