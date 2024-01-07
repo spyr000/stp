@@ -22,9 +22,8 @@ class _OnboardingCardState extends State<OnboardingCard> with SingleTickerProvid
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 40),
+      duration: const Duration(seconds: 40),
     );
-
     _animation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
@@ -50,14 +49,17 @@ class _OnboardingCardState extends State<OnboardingCard> with SingleTickerProvid
                       sigmaX: 3 * _animation.value,
                       sigmaY: 3 * _animation.value
                   ),
-                    child: Image.asset(
-                      widget.item.imageUrl,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.lerp(
-                        Alignment.centerLeft,
-                        Alignment.centerRight,
-                        _animation.value,
-                      ) ?? Alignment.center,
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Image.asset(
+                        widget.item.imageUrl,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.lerp(
+                          Alignment.centerLeft,
+                          Alignment.centerRight,
+                          _animation.value,
+                        ) ?? Alignment.center,
+                      ),
                     ),
                   );
                 },
@@ -71,11 +73,6 @@ class _OnboardingCardState extends State<OnboardingCard> with SingleTickerProvid
         ),
       ],
     );
-  }
-
-  Future<void> _markOnboardingComplete() async {
-    var prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isOnboardingComplete', true);
   }
 
   @override
