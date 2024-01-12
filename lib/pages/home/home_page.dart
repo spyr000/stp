@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stp/service/auth_service.dart';
+import 'package:kiwi/kiwi.dart';
 import 'package:stp/pages/home/widget/favourites_tab.dart';
 import 'package:stp/pages/home/widget/feed_tab.dart';
-import 'package:kiwi/kiwi.dart';
+import 'package:stp/service/auth_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -27,9 +27,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        // backgroundColor: theme.primaryColor,
+        title: const Text('Главная'),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
@@ -40,9 +42,12 @@ class _HomePageState extends State<HomePage> {
             },
             itemBuilder: (BuildContext context) {
               return [
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'logout',
-                  child: Text('Logout'),
+                  child: Text(
+                    'Выйти из аккаунта',
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ),
               ];
             },
@@ -63,15 +68,14 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dynamic_feed_outlined),
-            label: 'Feed',
+            label: 'Лента',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
-            label: 'Favourites',
+            label: 'Избранное',
           ),
         ],
       ),
     );
   }
 }
-

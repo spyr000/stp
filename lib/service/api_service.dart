@@ -1,11 +1,11 @@
-import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
 
 import '../data/dto/response_dto.dart';
 
 part 'api_service.g.dart';
 
-@RestApi(baseUrl: "https://en.wikipedia.org/w/api.php")
+@RestApi(baseUrl: "https://ru.wikipedia.org/w/api.php")
 abstract class ApiService {
   factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
 
@@ -34,7 +34,7 @@ abstract class ApiService {
       "prop=extracts|pageterms|pageimages|info")
   Future<ResponseModel> fetchPagesData(@Path("pageids") Object pageids);
 
-  Future<ResponseModel> fetchSpecifiedPagesData(List<int> pageids)  {
+  Future<ResponseModel> fetchSpecifiedPagesData(List<int> pageids) {
     var pageidsParam = pageids.map((id) => id.toString()).join('|');
     return fetchPagesData(pageidsParam);
   }

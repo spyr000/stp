@@ -20,9 +20,10 @@ class ShimmerImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Shimmer.fromColors(
-      baseColor: Colors.pinkAccent,
-      highlightColor: Colors.deepOrange,
+      baseColor: theme.colorScheme.tertiary,
+      highlightColor: theme.colorScheme.secondary,
       child: Container(
         height: height ?? double.infinity,
         width: width ?? double.infinity,

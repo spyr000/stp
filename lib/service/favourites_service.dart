@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart';
 import 'package:stp/exception/add_to_favourites_exception.dart';
 
@@ -16,7 +15,8 @@ class FavouritesService {
     if (uid == null) {
       throw AddToFavouritesException(
         code: 'unauthorized',
-        message: 'Please login to your account for doing this action',
+        message:
+            'Пожалуйста войдите в свой аккаунт для выполнения этого действия',
       );
     }
 
@@ -30,7 +30,7 @@ class FavouritesService {
     if (existingDoc.docs.isNotEmpty) {
       throw AddToFavouritesException(
         code: 'already-exists',
-        message: 'Page already exists in favorites',
+        message: 'Статья уже находится в вашем избранном',
       );
     }
 
@@ -43,9 +43,13 @@ class FavouritesService {
 
   static Future<FavouritesBatch> getFavouritesBatch(
       Timestamp? lastFavouriteTimestamp) async {
-    var uid = await _authService.getAuthUserUID();
+    var uid = _authService.currentUser;
     if (uid == null) {
-      throw 'Unauthorized';
+      throw AddToFavouritesException(
+        code: 'unauthorized',
+        message:
+            'Пожалуйста войдите в свой аккаунт для выполнения этого действия',
+      );
     }
 
     Query query = _firestore
@@ -79,7 +83,11 @@ class FavouritesService {
   static Future<void> deleteById(int pageId) async {
     var uid = await _authService.getAuthUserUID();
     if (uid == null) {
-      throw 'Unauthorized';
+      throw AddToFavouritesException(
+        code: 'unauthorized',
+        message:
+            'Пожалуйста войдите в свой аккаунт для выполнения этого действия',
+      );
     }
 
     var querySnapshot = await _firestore
@@ -100,9 +108,13 @@ class FavouritesService {
   }
 
   static Future<bool> isInFavourites(int pageId) async {
-    var uid = await _authService.getAuthUserUID();
+    var uid = _authService.currentUser;
     if (uid == null) {
-      throw 'Unauthorized';
+      throw AddToFavouritesException(
+        code: 'unauthorized',
+        message:
+            'Пожалуйста войдите в свой аккаунт для выполнения этого действия',
+      );
     }
 
     var querySnapshot = await _firestore

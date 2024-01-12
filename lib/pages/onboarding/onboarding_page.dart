@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:page_view_indicators/arrow_page_indicator.dart';
-import 'package:page_view_indicators/linear_progress_page_indicator.dart';
 import 'package:page_view_indicators/page_view_indicators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stp/model/onboarding_item.dart';
+import 'package:stp/data/dto/onboarding_item.dart';
 import 'package:stp/pages/onboarding/onboarding_card.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -32,7 +30,7 @@ class OnboardingPage extends StatelessWidget {
       description: 'Начните радоваться!',
     ),
     OnboardingItem(
-      imageUrl: 'assets/images/onboarding_image_5.gif',
+      imageUrl: 'assets/images/onboarding_image_6.jpg',
       description: 'Начните использовать наше приложение!',
     ),
   ];
@@ -42,11 +40,11 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _buildBody(),
+      body: _buildBody(context),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.black,
@@ -54,15 +52,15 @@ class OnboardingPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildPageView(),
-          _buildStepIndicator(),
-          _buildLastPageButton(),
+          _buildPageView(context),
+          _buildStepIndicator(context),
+          _buildLastPageButton(context),
         ],
       ),
     );
   }
 
-  Widget _buildPageView() {
+  Widget _buildPageView(BuildContext context) {
     return Expanded(
       child: PageView.builder(
         itemCount: ONBOARDING_ITEMS.length,
@@ -81,12 +79,12 @@ class OnboardingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStepIndicator() {
+  Widget _buildStepIndicator(BuildContext context) {
     return Container(
       color: Colors.transparent,
       padding: const EdgeInsets.all(16.0),
       child: StepPageIndicator(
-        stepColor: Colors.deepOrange,
+        stepColor: Theme.of(context).colorScheme.secondary,
         itemCount: ONBOARDING_ITEMS.length,
         currentPageNotifier: _notifier,
         size: 16,
@@ -99,7 +97,7 @@ class OnboardingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLastPageButton() {
+  Widget _buildLastPageButton(BuildContext context) {
     return AnimatedBuilder(
       animation: _notifier,
       builder: (context, child) {
@@ -107,7 +105,7 @@ class OnboardingPage extends StatelessWidget {
         return isLastPage
             ? Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () async {
                     _markOnboardingComplete().then((value) =>
                         Navigator.pushReplacementNamed(context, '/login'));

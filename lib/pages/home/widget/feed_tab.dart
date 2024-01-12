@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stp/pages/home/loader/feed_item_loader.dart';
-
-
+import 'package:stp/model/loader/feed_item_loader.dart';
 
 class FeedTab extends StatelessWidget {
   const FeedTab({super.key});

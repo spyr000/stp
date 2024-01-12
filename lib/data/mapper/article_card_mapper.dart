@@ -1,9 +1,9 @@
+import 'package:stp/data/dto/response_dto.dart';
 import 'package:stp/pages/article/article_card.dart';
 
-import 'package:stp/data/dto/response_dto.dart';
-
 abstract class ArticleCardMapper {
-  static const String DEFAULT_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/330px-Wikipedia-logo-v2.svg.png";
+  static const String DEFAULT_IMAGE_URL =
+      "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/330px-Wikipedia-logo-v2.svg.png";
 
   static ArticleCard fromDto(Page page) {
     var hasDescription = page.terms != null &&

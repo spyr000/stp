@@ -1,9 +1,9 @@
-import 'package:kiwi/kiwi.dart';
 import 'package:dio/dio.dart';
-import 'package:stp/service/auth_service.dart';
+import 'package:kiwi/kiwi.dart';
 import 'package:stp/service/api_service.dart';
+import 'package:stp/service/auth_service.dart';
 
-void setupContainer()  {
+void setupContainer() {
   final container = KiwiContainer();
 
   container.registerFactory((c) => Dio());

@@ -52,9 +52,7 @@ dependencies:
   cloud_firestore: ^4.14.0
   page_view_indicators: ^2.0.0
   dots_indicator: ^3.0.0
-
-#  cloud_firestore: ^4.13.5
-#  flutter_secure_storage: ^5.2.4
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:

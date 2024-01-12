@@ -1,9 +1,7 @@
 class AddToFavouritesException implements Exception {
-  AddToFavouritesException({
-    this.message,
-    required String? code,
-    this.stackTrace
-  }) : code = code ?? 'unknown';
+  AddToFavouritesException(
+      {this.message, required String? code, this.stackTrace})
+      : code = code ?? 'unknown';
 
   String? message;
 

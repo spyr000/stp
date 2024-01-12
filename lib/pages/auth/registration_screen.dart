@@ -14,7 +14,7 @@ class RegistrationScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registration'),
+        title: const Text('Регистрация'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -23,12 +23,12 @@ class RegistrationScreen extends StatelessWidget {
           children: [
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Электронная почта'),
             ),
             spacer,
             TextField(
               controller: passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Пароль'),
               obscureText: true,
             ),
             spacer,
@@ -46,14 +46,14 @@ class RegistrationScreen extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 });
               },
-              child: const Text('Register'),
+              child: const Text('Зарегистрироваться'),
             ),
             const SizedBox(height: 10),
             TextButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/login');
               },
-              child: const Text('Already have an account? Login here'),
+              child: const Text('У вас уже есть аккаунт? Войти'),
             ),
           ],
         ),

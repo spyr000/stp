@@ -3,7 +3,8 @@ import 'package:stp/pages/home/widget/article_item.dart';
 import '../dto/response_dto.dart';
 
 abstract class ArticleItemMapper {
-  static const String DEFAULT_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/330px-Wikipedia-logo-v2.svg.png";
+  static const String DEFAULT_IMAGE_URL =
+      "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/330px-Wikipedia-logo-v2.svg.png";
 
   static ArticleItem fromDto(Page page) {
     var hasDescription = page.terms != null &&

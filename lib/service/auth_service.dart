@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
@@ -9,10 +9,12 @@ class AuthService {
   final Codec<String, String> _codec = utf8.fuse(base64);
   final _sharedPrefsKey = 'auth_credentials';
 
+  get currentUser => _authService.currentUser?.uid;
+
   Future<void> register(String email, String password) async {
     try {
       if (email.isEmpty || password.isEmpty) {
-        throw 'Please fill in the blank fields';
+        throw 'Пожалуйста заполните пустые поля';
       }
       var userCredential = await _authService.createUserWithEmailAndPassword(
         email: email,
@@ -21,7 +23,7 @@ class AuthService {
       SharedPreferences.getInstance().then((prefs) => {
             prefs.setString(_sharedPrefsKey, _codec.encode('$email:$password'))
           });
-      debugPrint('credential uid: ${userCredential.user?.uid}');
+      log('credential uid: ${userCredential.user?.uid}');
     } on FirebaseAuthException catch (e) {
       throw e.message ?? 'Error: $e';
     } catch (e) {
@@ -41,7 +43,7 @@ class AuthService {
       SharedPreferences.getInstance().then((prefs) => {
             prefs.setString(_sharedPrefsKey, _codec.encode('$email:$password'))
           });
-      debugPrint('credential uid: ${userCredential.user?.uid}');
+      log('credential uid: ${userCredential.user?.uid}');
     } on FirebaseAuthException catch (e) {
       throw e.message ?? 'Error: $e';
     } catch (e) {
@@ -70,8 +72,8 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    SharedPreferences.getInstance().then((prefs) => prefs.remove(_sharedPrefsKey));
+    SharedPreferences.getInstance()
+        .then((prefs) => prefs.remove(_sharedPrefsKey));
     await FirebaseAuth.instance.signOut();
   }
-
 }

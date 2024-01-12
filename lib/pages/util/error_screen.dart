@@ -15,13 +15,17 @@ class ErrorScreen extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Text('Error${message == null ? '' : ': $message'}'),
+            Text('Error${message == null ? '' : ': $message'}',
+                style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(
               height: 20,
             ),
             ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Back'))
+                child: Text(
+                  'Назад',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ))
           ],
         ),
       ),

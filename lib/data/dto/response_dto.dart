@@ -21,9 +21,9 @@ class ResponseModel {
   @override
   String toString() {
     return 'ResponseModel{'
-    // 'batchcomplete: $batchcomplete,'
-    // ' continue_: $continue_,'
-    // ' warnings: $warnings,'
+        // 'batchcomplete: $batchcomplete,'
+        // ' continue_: $continue_,'
+        // ' warnings: $warnings,'
         ' query: $query'
         '}';
   }
@@ -100,27 +100,27 @@ class Query {
 @JsonSerializable()
 class Page {
   final int? pageid;
+
   // final int? ns;
   final String? title;
   final String? extract;
   final Terms? terms;
+
   // final Thumbnail? thumbnail;
   // final String? pageimage;
   final Original? original;
   final String? canonicalurl;
 
   Page(
-      {
-        this.pageid,
-        // this.ns,
-        this.title,
-        this.extract,
-        this.terms,
-        // this.thumbnail,
-        // this.pageimage,
-        this.original,
-        this.canonicalurl
-      });
+      {this.pageid,
+      // this.ns,
+      this.title,
+      this.extract,
+      this.terms,
+      // this.thumbnail,
+      // this.pageimage,
+      this.original,
+      this.canonicalurl});
 
   factory Page.fromJson(Map<String, dynamic> json) => _$PageFromJson(json);
 

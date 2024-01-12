@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stp/pages/article/widget/article_image.dart';
-import 'package:stp/pages/util/shimmer.dart';
 import 'package:stp/service/network_redirection_service.dart';
-import 'package:stp/pages/article/widget/favourites_button.dart';
 
 class ArticleItem extends StatelessWidget {
   final int pageId;
@@ -13,7 +11,6 @@ class ArticleItem extends StatelessWidget {
   final String description;
   final String pageUrl;
 
-  // Private constructor
   const ArticleItem._({
     required this.pageId,
     required this.imageUrl,
@@ -46,15 +43,17 @@ class ArticleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
       margin: const EdgeInsets.all(16.0),
-      color: Colors.redAccent[50],
-      surfaceTintColor: Colors.red,
+      color: theme.cardColor,
+      surfaceTintColor: theme.primaryColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Card(
-            color: Colors.deepOrange[100],
+            color: theme.colorScheme.secondary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.0),
             ),
@@ -70,25 +69,19 @@ class ArticleItem extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
             child: Text(
               title,
-              style: const TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+              style: theme.textTheme.titleLarge,
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
             child: Text(
               description,
-              style: const TextStyle(
-                fontSize: 16.0,
-              ),
+              style: theme.textTheme.bodyMedium,
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              //TODO: PUT IN SEPARATE CLASS
               ConstrainedBox(
                 constraints: const BoxConstraints(
                   maxHeight: 48.0,
@@ -97,7 +90,7 @@ class ArticleItem extends StatelessWidget {
                   onPressed: () => UrlLauncher.launchPageURL(pageUrl),
                   icon: Icon(
                     Icons.link,
-                    color: Colors.grey[700],
+                    color: theme.iconTheme.color,
                   ),
                 ),
               ),

@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stp/model/onboarding_item.dart';
+import 'package:stp/data/dto/onboarding_item.dart';
 
 class OnboardingCard extends StatefulWidget {
   final OnboardingItem item;
@@ -13,7 +12,8 @@ class OnboardingCard extends StatefulWidget {
   _OnboardingCardState createState() => _OnboardingCardState();
 }
 
-class _OnboardingCardState extends State<OnboardingCard> with SingleTickerProviderStateMixin {
+class _OnboardingCardState extends State<OnboardingCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -41,31 +41,31 @@ class _OnboardingCardState extends State<OnboardingCard> with SingleTickerProvid
       children: [
         Expanded(
           child: ClipRect(
-              child: AnimatedBuilder(
-                animation: _animation,
-                builder: (context, child) {
-                  return ImageFiltered(
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return ImageFiltered(
                   imageFilter: ImageFilter.blur(
                       sigmaX: 3 * _animation.value,
-                      sigmaY: 3 * _animation.value
-                  ),
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Image.asset(
-                        widget.item.imageUrl,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.lerp(
-                          Alignment.centerLeft,
-                          Alignment.centerRight,
-                          _animation.value,
-                        ) ?? Alignment.center,
-                      ),
+                      sigmaY: 3 * _animation.value),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Image.asset(
+                      widget.item.imageUrl,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.lerp(
+                            Alignment.centerLeft,
+                            Alignment.centerRight,
+                            _animation.value,
+                          ) ??
+                          Alignment.center,
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
+        ),
         Text(
           widget.item.description,
           style: const TextStyle(color: Colors.white),

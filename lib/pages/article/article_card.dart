@@ -1,17 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stp/exception/add_to_favourites_exception.dart';
-import 'package:stp/pages/home/widget/favourites_tab.dart';
 import 'package:stp/pages/article/widget/article_image.dart';
-import 'package:stp/pages/util/shimmer.dart';
+import 'package:stp/pages/article/widget/favourites_button.dart';
 import 'package:stp/service/favourites_service.dart';
 import 'package:stp/service/network_redirection_service.dart';
-import 'package:stp/pages/home/widget/article_item.dart';
-
-import 'package:stp/pages/article/widget/favourites_button.dart';
 
 class ArticleCard extends StatelessWidget {
   final int pageId;
@@ -24,7 +18,7 @@ class ArticleCard extends StatelessWidget {
   final String pageUrl;
 
   const ArticleCard({
-    super.key,
+    Key? key,
     required this.pageId,
     required this.title,
     required this.description,
@@ -33,51 +27,36 @@ class ArticleCard extends StatelessWidget {
     required this.imageWidth,
     required this.imageHeight,
     required this.pageUrl,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     const spacer = SizedBox(height: 16.0);
-    const titleTextStyle = TextStyle(
-      fontSize: 24.0,
-      fontWeight: FontWeight.bold,
-    );
-    final descriptionText = Text(
-      description,
-      textAlign: TextAlign.center,
-      style: const TextStyle(
-        fontFamily: 'Montserrat',
-        fontSize: 18.0,
-      ),
-    );
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pinkAccent.withOpacity(0.1),
+        backgroundColor: theme.colorScheme.tertiary.withOpacity(0.1),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        // title: Text(
-        //   title,
-        //   style: titleTextStyle,
-        // ),
         actions: [
           FutureBuilder<bool>(
             future: FavouritesService.isInFavourites(pageId),
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting ||
                   snapshot.hasError) {
-                return SizedBox(
+                return const SizedBox(
                   height: 48.0,
                   width: 48.0,
                   child: Material(
-                    color: Colors.transparent, // Set a transparent color
-                    child: RefreshProgressIndicator(
-                      color: Colors.grey[700],
+                    color: Colors.transparent,
+                    child: CircularProgressIndicator(
+                      color: Colors.grey,
                       backgroundColor: Colors.transparent,
-                      elevation: 0,
                     ),
                   ),
                 );
@@ -106,10 +85,13 @@ class ArticleCard extends StatelessWidget {
       ),
       body: Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Colors.pinkAccent.withOpacity(0.1),
-              Colors.deepOrange.withOpacity(0.1),
-            ], transform: const GradientRotation(120))
+          gradient: LinearGradient(
+            colors: [
+              theme.colorScheme.tertiary.withOpacity(0.1),
+              theme.colorScheme.secondary.withOpacity(0.1),
+            ],
+            transform: const GradientRotation(120),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -120,13 +102,13 @@ class ArticleCard extends StatelessWidget {
                 header: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: theme.textTheme.titleLarge,
                 ),
-                collapsed: descriptionText,
+                collapsed: Text(
+                  description,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium,
+                ),
                 expanded: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -138,7 +120,11 @@ class ArticleCard extends StatelessWidget {
                       isRedirecting: false,
                     ),
                     spacer,
-                    descriptionText,
+                    Text(
+                      description,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium,
+                    ),
                   ],
                 ),
                 controller: ExpandableController(initialExpanded: true),
@@ -151,18 +137,23 @@ class ArticleCard extends StatelessWidget {
                     height: 170,
                     width: 120,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(colors: [
-                          Colors.pinkAccent.withOpacity(0.4),
-                          Colors.deepOrange.withOpacity(0.4),
-                        ], transform: const GradientRotation(120)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.red.shade200.withOpacity(0.1),
-                              offset: const Offset(10, 5),
-                              spreadRadius: 1,
-                              blurRadius: 100)
-                        ]),
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.tertiary.withOpacity(0.4),
+                          theme.colorScheme.secondary.withOpacity(0.4),
+                        ],
+                        transform: const GradientRotation(120),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.shade200.withOpacity(0.1),
+                          offset: const Offset(10, 5),
+                          spreadRadius: 1,
+                          blurRadius: 100,
+                        ),
+                      ],
+                    ),
                     child: SingleChildScrollView(
                       clipBehavior: Clip.none,
                       child: Html(
@@ -172,7 +163,6 @@ class ArticleCard extends StatelessWidget {
                             fontFamily: 'Montserrat',
                             fontSize: FontSize(16.0),
                           ),
-                          // Define styles for other HTML tags as needed
                         },
                       ),
                     ),
@@ -182,7 +172,7 @@ class ArticleCard extends StatelessWidget {
               spacer,
               TextButton(
                 onPressed: () => UrlLauncher.launchPageURL(pageUrl),
-                child: const Text('Open in browser'),
+                child: Text('Открыть в браузере'),
               ),
             ],
           ),

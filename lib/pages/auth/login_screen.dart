@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stp/service/auth_service.dart';
-
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -16,7 +14,7 @@ class LoginScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Вход'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -25,12 +23,12 @@ class LoginScreen extends StatelessWidget {
           children: [
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Электронная почта'),
             ),
             spacer,
             TextField(
               controller: passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Пароль'),
               obscureText: true,
             ),
             spacer,
@@ -48,14 +46,14 @@ class LoginScreen extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 });
               },
-              child: const Text('Submit'),
+              child: const Text('Войти'),
             ),
             const SizedBox(height: 10),
             TextButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/registration');
               },
-              child: const Text('Don\'t have an account? Register here'),
+              child: const Text('У вас нет учетной записи? Зарегистрироваться'),
             ),
           ],
         ),

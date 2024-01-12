@@ -1,21 +1,23 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stp/assets/theme.dart';
+import 'package:stp/data/dto/response_dto.dart';
+import 'package:stp/data/mapper/article_card_mapper.dart';
+import 'package:stp/firebase_options.dart';
 import 'package:stp/pages/auth/login_screen.dart';
 import 'package:stp/pages/auth/registration_screen.dart';
-import 'package:stp/service/auth_service.dart';
-import 'package:stp/data/dto/response_dto.dart';
-import 'package:stp/pages/util/loading_screen.dart';
 import 'package:stp/pages/home/home_page.dart';
-import 'package:stp/service/api_service.dart';
-
-import 'package:stp/data/mapper/article_card_mapper.dart';
-import 'package:stp/pages/util/error_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stp/firebase_options.dart';
-import 'package:stp/service/ioc/di_container.dart';
 import 'package:stp/pages/onboarding/onboarding_page.dart';
+import 'package:stp/pages/util/error_screen.dart';
+import 'package:stp/pages/util/loading_screen.dart';
+import 'package:stp/service/api_service.dart';
+import 'package:stp/service/auth_service.dart';
+import 'package:stp/service/ioc/di_container.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,15 +50,7 @@ class _AppState extends State<App> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorKey: _navigatorKey,
-        theme: ThemeData(
-          textTheme: const TextTheme(
-            bodyMedium: TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: 16.0,
-            ),
-          ),
-          primarySwatch: Colors.deepOrange,
-        ),
+        theme: applicationTheme,
         home: FutureBuilder(
           future: _initFirebaseSdk,
           builder: (_, firebaseLoadingSnapshot) {
@@ -94,7 +88,7 @@ class _AppState extends State<App> {
   Future<List> _fetchPageData(int pageId) async {
     var apiService = KiwiContainer().resolve<ApiService>();
     final ResponseModel response = await apiService.fetchPagesData(pageId);
-    debugPrint('fetched response: $response');
+    log('fetched response: $response');
     return ArticleCardMapper.fromResponseModelDto(response);
   }
 
@@ -140,7 +134,7 @@ class _AppState extends State<App> {
               var fetchedItems = snapshot.data as List;
               return fetchedItems.isNotEmpty
                   ? fetchedItems[0]
-                  : const ErrorScreen(message: 'Page is not found');
+                  : const ErrorScreen(message: 'Страница не найдена');
             }
           },
         );

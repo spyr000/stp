@@ -20,37 +20,32 @@ class FavouritesButton extends StatefulWidget {
 }
 
 class _FavouritesButtonState extends State<FavouritesButton> {
-  Color buttonColor = Colors.grey[700]!;
+  late Color buttonColor;
+
+  @override
+  void initState() {
+    super.initState();
+    buttonColor = widget.isAlreadyToggled ? Colors.red : Colors.grey[700]!;
+  }
 
   void toggle() {
-    print(isOff);
     setState(() {
-      buttonColor = isOff ? Colors.red : Colors.grey[700]!;
+      buttonColor =
+          buttonColor == Colors.grey[700]! ? Colors.red : Colors.grey[700]!;
     });
   }
 
-  bool get isOff => buttonColor == Colors.grey[700]!;
-
   @override
   Widget build(BuildContext context) {
-    if (widget.isAlreadyToggled) {
-      setState(() {
-        buttonColor = Colors.red;
-      });
-    }
-    ;
-
     return ConstrainedBox(
       constraints: const BoxConstraints(
         maxHeight: 48.0,
       ),
       child: IconButton(
-        onPressed: () {
-          if (isOff) {
-            print('turn off');
+        onPressed: () async {
+          if (buttonColor == Colors.grey[700]!) {
             widget.onTurningOn();
           } else {
-            print('turn on');
             widget.onTurningOff();
           }
           toggle();
