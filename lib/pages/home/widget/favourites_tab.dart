@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stp/pages/home/loader/favourites_item_loader.dart';
-
+import 'package:stp/model/loader/favourites_item_loader.dart';
 
 class FavouritesTab extends StatelessWidget {
   const FavouritesTab({super.key});
